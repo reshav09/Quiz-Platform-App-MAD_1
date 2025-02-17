@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .subject-section {
+            margin-bottom: 40px;
+        }
+        .chapter-card {
+            margin-bottom: 20px;
+        }
+        .quiz-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .quiz-item:last-child {
+            border-bottom: none;
+        }
+        .timer {
+            font-weight: bold;
+        }
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #343a40;
+        }
+    </style>
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Quiz Master</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" >Welcome, {{user_name}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">User Dashboard</h2>
+        <h3 class="mb-3">Available Quizzes</h3>
+
+        {% for subject in subjects %}
+        <div class="subject-section">
+            <h4 class="mb-3 text-primary">{{ subject.name }}</h4>
+            <div class="row">
+                {% for chapter in chapterss if chapter.subject_id == subject.id %}
+                <div class="col-lg-4 col-md-6 col-sm-12 chapter-card">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">{{ chapter.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if quizzes|selectattr('chapter_id', 'equalto', chapter.id)|list %}
+                            <ul class="list-group">
+                                {% for quiz in quizzes if quiz.chapter_id == chapter.id %}
+                                <li class="list-group-item quiz-item">
+                                    <span>Quiz ID: {{ quiz.id }}</span>
+                                    <span class="badge bg-success">{{ quiz.date_of_quiz }}</span>
+                                    <a href="/attempt_quiz/{{ quiz.id }}" class="btn btn-primary btn-sm">Attempt Quiz</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <p>No quizzes available for this chapter currently .</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <h3 class="mt-5">Quiz History</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>S No.</th>
+                    <th>Quiz ID</th>
+                    <th>Subject</th>
+                    <th>Chapter</th>
+                    <th>Date & Time Attempted</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enriched_score in scores %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ enriched_score.quiz.id }}</td>
+                    <td>{{ enriched_score.subject.name }}</td>
+                    <td>{{ enriched_score.chapter.name }}</td>
+                    <td>{{ enriched_score.score.time_stamp_of_attempt }}</td>
+                    <td>{{ enriched_score.score.total_scored }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3 class="mt-5">Quiz Summary</h3>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Subject Wise Trend</div>
+                    <div class="card-body">
+                        <canvas id="subjectTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Score Trend</div>
+                    <div class="card-body">
+                        <canvas id="scoreTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Quiz Attempts Over Time</div>
+                    <div class="card-body">
+                        <canvas id="quizAttemptsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            const summaryData = {{ summaryData | tojson }};
+            const scoreTrendCtx = document.getElementById('scoreTrendChart').getContext('2d');
+            const scoreTrendChart = new Chart(scoreTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: summaryData.dates, 
+                    datasets: [{
+                        label: 'Average Score',
+                        data: summaryData.avg_scores, 
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Date' } },
+                        y: { title: { display: true, text: 'Average Score' } }
+                    }
+                }
+            });
+           
+            const quizAttemptsCtx = document.getElementById('quizAttemptsChart').getContext('2d');
+            const quizAttemptsChart = new Chart(quizAttemptsCtx, {
+                type: 'bar',
+                data: {
+                    labels: summaryData.dates, 
+                    datasets: [{
+                        label: 'Quiz Attempts',
+                        data: summaryData.attempts, 
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Date' } },
+                        y: { title: { display: true, text: 'Quiz Attempts' } }
+                    }
+                }
+            });
+        
+            
+            const subjectTrendCtx = document.getElementById('subjectTrendChart').getContext('2d');
+            const subjectTrendChart = new Chart(subjectTrendCtx, {
+                type: 'bar',
+                data: {
+                    labels: summaryData.subjects, 
+                    datasets: [{
+                        label: 'Attempts by Subject',
+                        data: summaryData.subjectAttempts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        </script>
+        
+
+</body>
+</html>
