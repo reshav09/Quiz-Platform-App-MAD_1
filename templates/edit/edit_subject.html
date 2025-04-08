@@ -1,40 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-theme">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Subject</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Subject</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --navbar-bg: #343a40;
+      --input-bg: rgba(255, 255, 255, 0.6);
+      --input-text: #262b30;
+      --shadow-color: rgba(0, 0, 0, 0.08);
+      --focus-shadow: rgba(0, 123, 255, 0.25);
+    }
+
+    .dark-theme {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --card-bg: #1e1e1e;
+      --navbar-bg: #212529;
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --input-text: #f1f1f1;
+      --shadow-color: rgba(255, 255, 255, 0.05);
+      --focus-shadow: rgba(0, 123, 255, 0.4);
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .navbar {
+      background-color: var(--navbar-bg) !important;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: var(--text-color);
+    }
+
+    .form-control,
+    textarea {
+      background-color: var(--input-bg) !important;
+      color: var(--input-text) !important;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      transition: all 0.3s ease;
+    }
+
+    .form-control::placeholder {
+      color: var(--input-text);
+      opacity: 0.5;
+    }
+
+    .form-control:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--focus-shadow);
+      background-color: var(--input-bg) !important;
+      color: var(--input-text) !important;
+    }
+
+    .btn-theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid var(--text-color);
+      color: var(--text-color);
+      background-color: transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quiz Master</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-semibold fs-5" href="/">Quiz Master</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <li class="nav-item ms-2">
+            <button id="theme-toggle" class="btn btn-theme-toggle">Dark Mode</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <div class="container mt-4">
-        <h2>Edit Subject</h2>
-        <form method="POST">
-            <div class="mb-3">
-                <label for="name" class="form-label">Subject Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ subject.name }}" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3" required>{{ subject.description }}</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
-    </div>
-    <div class="text-center mt-3">
-        <a href="/admin_dashboard" class="btn btn-secondary">Back to Dashboard</a>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="container mt-4">
+    <h2>Edit Subject</h2>
+    <form method="POST">
+      <div class="mb-3">
+        <label for="name" class="form-label">Subject Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ subject.name }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required>{{ subject.description }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+
+  <div class="text-center mt-3">
+    <a href="/admin_dashboard" class="btn btn-secondary">Back to Dashboard</a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const themeToggleBtn = document.getElementById("theme-toggle");
+
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("light-theme", "dark-theme");
+      document.documentElement.classList.add(`${theme}-theme`);
+      themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    };
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  </script>
 </body>
 </html>

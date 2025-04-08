@@ -1,31 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-theme">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Master</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Master</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --navbar-bg: #343a40;
+    }
+
+    .dark-theme {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --card-bg: #1e1e1e;
+      --navbar-bg: #212529;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: var(--navbar-bg) !important;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid var(--text-color);
+      color: var(--text-color);
+      background-color: transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .btn {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quiz Master</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        <h1 class="text-center">Welcome to Quiz Master</h1>
-        <p class="text-center">An interactive platform for preparing for exams. Login or register to get started!</p>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">Quiz Master</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+          <li class="nav-item ms-2">
+            <button id="theme-toggle" class="btn btn-theme-toggle">Dark Mode</button>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="d-flex justify-content-center">
-        <a href="/login" class="btn btn-primary me-2">Login</a>
-        <a href="/register" class="btn btn-secondary">Register</a>
+  </nav>
+
+  <div class="main-content container">
+    <div class="card text-center w-100" style="max-width: 600px;">
+      <h1 class="mb-3">Welcome to Quiz Master</h1>
+      <p class="mb-4">An interactive platform for preparing for exams. Login or register to get started!</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="/login" class="btn btn-primary px-4">Login</a>
+        <a href="/register" class="btn btn-outline-secondary px-4">Register</a>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </div>
+
+  <script>
+    const themeToggleBtn = document.getElementById("theme-toggle");
+
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("light-theme", "dark-theme");
+      document.documentElement.classList.add(`${theme}-theme`);
+      // Update button text
+      themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    };
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

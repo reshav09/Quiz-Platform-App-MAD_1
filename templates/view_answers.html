@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Answers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .dark-theme {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --card-bg: #1e1e1e;
+      --shadow-color: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .list-group-item {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 2px 6px var(--shadow-color);
+      padding: 1.25rem;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .btn-theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      border-radius: 999px;
+      border: 2px solid var(--text-color);
+      background-color: transparent;
+      color: var(--text-color);
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+    }
+
+    .list-group li {
+      margin: 4px 0;
+    }
+
+    .custom-alert-info {
+        background-color: rgba(13, 202, 240, 0.15); /* light info blue */
+        border-left: 5px solid #0dcaf0;
+        color: var(--text-color);
+        padding: 1rem 1.25rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 6px var(--shadow-color);
+        transition: all 0.3s ease;
+        animation: fadeInSlide 0.5s ease;
+    }
+
+    @keyframes fadeInSlide {
+        from {
+        opacity: 0;
+        transform: translateY(8px);
+        }
+        to {
+        opacity: 1;
+        transform: translateY(0);
+        }
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="container mt-5 position-relative">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="mb-1">Quiz Answers</h2>
+        <button id="theme-toggle" class="btn btn-theme-toggle">Dark Mode</button>
+    </div>
+      
+    <div class="mb-4">
+        {% if quiz.remarks %}
+          <div class="custom-alert-info">
+            <strong>Remarks:</strong> {{ quiz.remarks }}
+          </div>
+        {% endif %}
+      </div>
+    <div class="list-group">
+      {% for q in questions %}
+      <div class="list-group-item mb-3">
+        <h5>Q{{ loop.index }}. {{ q.question_statement }}</h5>
+        <ul>
+          <li {% if q.correct_option == 1 %}class="text-success fw-semibold"{% endif %}>A. {{ q.option1 }}</li>
+          <li {% if q.correct_option == 2 %}class="text-success fw-semibold"{% endif %}>B. {{ q.option2 }}</li>
+          <li {% if q.correct_option == 3 %}class="text-success fw-semibold"{% endif %}>C. {{ q.option3 }}</li>
+          <li {% if q.correct_option == 4 %}class="text-success fw-semibold"{% endif %}>D. {{ q.option4 }}</li>
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+
+    <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary mt-4">Back to User Dashboard</a>
+  </div>
+
+  <script>
+    const themeToggleBtn = document.getElementById("theme-toggle");
+
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("light-theme", "dark-theme");
+      document.documentElement.classList.add(`${theme}-theme`);
+      themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    };
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  </script>
+</body>
+</html>

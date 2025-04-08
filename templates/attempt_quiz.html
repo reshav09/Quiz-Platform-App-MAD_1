@@ -1,29 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-theme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attempt Quiz</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --navbar-bg: #343a40;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --input-text: #212529;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --focus-shadow: rgba(13, 110, 253, 0.25);
+        }
+
+        .dark-theme {
+            --bg-color: #121212;
+            --text-color: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --navbar-bg: #212529;
+            --input-bg: rgba(40, 40, 40, 0.9);
+            --input-text: #f1f1f1;
+            --shadow-color: rgba(255, 255, 255, 0.06);
+            --focus-shadow: rgba(0, 123, 255, 0.4);
+        }
+
+        * {
+            transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg) !important;
+        }
+
+        .btn-theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            background-color: transparent;
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-theme-toggle:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
         .question-section {
             margin-bottom: 40px;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            padding: 2rem;
+            border-radius: 1rem;
         }
+
         .timer {
             font-size: 1.5rem;
             font-weight: bold;
             color: red;
             text-align: right;
         }
+
         .question {
             margin-bottom: 20px;
+        }
+
+        .form-check-label {
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .btn-secondary {
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 10px var(--shadow-color);
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Quiz Master</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <button id="theme-toggle" class="btn btn-theme-toggle">Dark Mode</button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -67,6 +155,28 @@
         </form>
         
         <script>
+            const themeToggleBtn = document.getElementById("theme-toggle");
+
+            function applyTheme(theme) {
+                document.documentElement.classList.remove("light-theme", "dark-theme");
+                document.documentElement.classList.add(`${theme}-theme`);
+                themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+            }
+
+            function toggleTheme() {
+                const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+                const newTheme = currentTheme === "dark" ? "light" : "dark";
+                applyTheme(newTheme);
+                localStorage.setItem("theme", newTheme);
+            }
+
+            window.onload = () => {
+                const savedTheme = localStorage.getItem("theme") || "light";
+                applyTheme(savedTheme);
+            };
+
+            themeToggleBtn.addEventListener("click", toggleTheme);
+            
             const timerElement = document.getElementById('timer');
             const submitButton = document.querySelector('button[type="submit"]');  
             let timeLeft = {{ quiz.time_duration }} * 60;
@@ -88,7 +198,6 @@
             }
         
             function submitQuiz() {
-                
                 submitButton.disabled = true;
                 isSubmitted = true;  
                 document.querySelector('form').submit(); 
@@ -97,14 +206,15 @@
             setInterval(updateTimer, 1000);
         </script>
         
-        
         {% endif %}
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     {% if questions|length == 0 %}
     <div class="text-center mt-3">
         <a href="/user_dashboard" class="btn btn-secondary">Back to Your Dashboard</a>
     </div>
     {% endif %}
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

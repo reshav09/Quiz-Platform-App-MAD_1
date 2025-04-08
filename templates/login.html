@@ -1,37 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-theme">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --navbar-bg: #343a40;
+    }
+
+    .dark-theme {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --card-bg: #1e1e1e;
+      --navbar-bg: #212529;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: var(--navbar-bg) !important;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid var(--text-color);
+      color: var(--text-color);
+      background-color: transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .btn {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    input.form-control {
+      background-color: rgba(255, 255, 255, 0.6);
+      border: none;
+      color: #000;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    input:focus::placeholder {
+        color: transparent;
+    }
+        
+    input::placeholder {
+        color: var(--input-text);
+        opacity: 1;
+        transition: color 0.3s ease;
+    }
+
+    input.form-control:focus {
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); /* Optional: keep Bootstrap's glow */
+        border: none;
+    }
+
+    .dark-theme input.form-control {
+      background-color: rgba(40, 40, 40, 0.6);
+      color: #f1f1f1;
+    }
+
+    input.form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quiz Master</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        <h2>Login</h2>
-        <form method="POST" class="mt-3">
-            <div class="mb-3">
-                <label for="username" class="form-label">Username:</label>
-                <input type="text" id="username" name="username" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">Quiz Master</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+          <li class="nav-item ms-2">
+            <button id="theme-toggle" class="btn btn-theme-toggle">Dark Mode</button>
+          </li>
+        </ul>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </nav>
+
+  <div class="main-content container">
+    <div class="card">
+      <h2 class="mb-4 text-center">Login</h2>
+      <form method="POST">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username:</label>
+          <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const themeToggleBtn = document.getElementById("theme-toggle");
+
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("light-theme", "dark-theme");
+      document.documentElement.classList.add(`${theme}-theme`);
+      themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    };
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

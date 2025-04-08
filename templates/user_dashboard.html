@@ -1,233 +1,403 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-theme">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
 
-    <style>
-        .subject-section {
-            margin-bottom: 40px;
-        }
-        .chapter-card {
-            margin-bottom: 20px;
-        }
-        .quiz-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #f1f1f1;
-        }
-        .quiz-item:last-child {
-            border-bottom: none;
-        }
-        .timer {
-            font-weight: bold;
-        }
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            color: #343a40;
-        }
-    </style>
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --navbar-bg: #343a40;
+      --input-bg: rgba(255, 255, 255, 0.6);
+      --input-text: #262b30;
+      --shadow-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .dark-theme {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --card-bg: #1e1e1e;
+      --navbar-bg: #212529;
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --input-text: #f1f1f1;
+      --shadow-color: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .navbar {
+      background-color: var(--navbar-bg) !important;
+    }
+
+    h2, h3, h4 {
+      color: var(--text-color);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 8px var(--shadow-color);
+      border: none;
+      border-radius: 1rem;
+      margin-top: 1rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-header {
+      border-radius: 1rem 1rem 0 0;
+    }
+
+    .quiz-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--shadow-color);
+      background-color: transparent;
+      color: var(--text-color);
+    }
+
+    .no-quizzes-msg {
+      color: var(--text-color);
+      font-weight: 500;
+      padding: 5px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--shadow-color);
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 1px;
+    }
+
+
+
+    .quiz-item:last-child {
+      border-bottom: none;
+    }
+
+    .table {
+      color: var(--text-color);
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+
+    .table th, .table td {
+      background-color: transparent !important;
+    }
+
+    .table th,
+    .table td {
+    color: var(--text-color);
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+    background-color: var(--card-bg);
+    }
+
+    .table-striped tbody tr:nth-child(even) {
+    background-color: var(--card-bg);
+    }
+
+    .table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    .table thead {
+    background-color: var(--navbar-bg);
+    }
+
+    .table thead th {
+    color: var(--text-color);
+    }
+
+    .table tbody td {
+    color: var(--text-color);}
+
+    .btn-theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid var(--text-color);
+      color: var(--text-color);
+      background-color: transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+    }
+
+    .subject-heading {
+      position: relative;
+      display: inline-block;
+      font-size: 1.5rem;
+      font-weight: 600; 
+      color: var(--text-color);
+      padding-left: 1rem;
+      border-left: 4px solid #0d6efd;
+      background: rgba(13, 110, 253, 0.05);
+      border-radius: 0.375rem;
+      margin-top: 3.5rem;
+      padding: 0.6rem 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-color);
+      border-bottom: 2px solid var(--shadow-color);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sub-section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+
+
+  </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quiz Master</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" >Welcome, {{user_name}}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-                </ul>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">Quiz Master</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link">Welcome, {{user_name}}</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <li class="nav-item ms-2">
+            <button id="theme-toggle" class="btn btn-theme-toggle">Dark Mode</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="section-title">User Dashboard</h2>
+    <h3 class="sub-section-title">Available Quizzes</h3>
+
+    {% for subject in subjects %}
+    <div class="subject-section">
+      <h4 class="subject-heading mb-4">{{ subject.name }}</h4>
+      <div class="row">
+        {% for chapter in chapterss if chapter.subject_id == subject.id %}
+        <div class="col-lg-4 col-md-6 col-sm-12 chapter-card">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h5 class="card-title mb-0">{{ chapter.name }}</h5>
             </div>
-        </div>
-    </nav>
-
-    <div class="container mt-5">
-        <h2 class="mb-4">User Dashboard</h2>
-        <h3 class="mb-3">Available Quizzes</h3>
-
-        {% for subject in subjects %}
-        <div class="subject-section">
-            <h4 class="mb-3 text-primary">{{ subject.name }}</h4>
-            <div class="row">
-                {% for chapter in chapterss if chapter.subject_id == subject.id %}
-                <div class="col-lg-4 col-md-6 col-sm-12 chapter-card">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0">{{ chapter.name }}</h5>
-                        </div>
-                        <div class="card-body">
-                            {% if quizzes|selectattr('chapter_id', 'equalto', chapter.id)|list %}
-                            <ul class="list-group">
-                                {% for quiz in quizzes if quiz.chapter_id == chapter.id %}
-                                <li class="list-group-item quiz-item">
-                                    <span>Quiz ID: {{ quiz.id }}</span>
-                                    <span class="badge bg-success">{{ quiz.date_of_quiz }}</span>
-                                    <a href="/attempt_quiz/{{ quiz.id }}" class="btn btn-primary btn-sm">Attempt Quiz</a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            {% else %}
-                            <p>No quizzes available for this chapter currently .</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body">
+              {% if quizzes|selectattr('chapter_id', 'equalto', chapter.id)|list %}
+              <ul class="list-group list-group-flush">
+                {% for quiz in quizzes if quiz.chapter_id == chapter.id %}
+                <li class="list-group-item quiz-item">
+                  <span>Quiz ID: {{ quiz.id }}</span>
+                  <span class="badge bg-success">{{ quiz.date_of_quiz }}</span>
+                  <a href="/attempt_quiz/{{ quiz.id }}" class="btn btn-primary btn-sm">Attempt Quiz</a>
+                </li>
                 {% endfor %}
+              </ul>
+              {% else %}
+                <p class="no-quizzes-msg">No quizzes available for this chapter currently.</p>
+              {% endif %}
             </div>
+          </div>
         </div>
         {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
 
-        <h3 class="mt-5">Quiz History</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>S No.</th>
-                    <th>Quiz ID</th>
-                    <th>Subject</th>
-                    <th>Chapter</th>
-                    <th>Date & Time Attempted</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for enriched_score in scores %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ enriched_score.quiz.id }}</td>
-                    <td>{{ enriched_score.subject.name }}</td>
-                    <td>{{ enriched_score.chapter.name }}</td>
-                    <td>{{ enriched_score.score.time_stamp_of_attempt }}</td>
-                    <td>{{ enriched_score.score.total_scored }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <h3 class="sub-section-title mt-5">Quiz History</h3>
+    <div class="table-responsive">
+      <table class="table table-striped rounded">
+        <thead>
+          <tr>
+            <th>S No.</th>
+            <th>Quiz ID</th>
+            <th>Subject</th>
+            <th>Chapter</th>
+            <th>Date & Time Attempted</th>
+            <th>Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for enriched_score in scores %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ enriched_score.quiz.id }}</td>
+            <td>{{ enriched_score.subject.name }}</td>
+            <td>{{ enriched_score.chapter.name }}</td>
+            <td>{{ enriched_score.score.time_stamp_of_attempt }}</td>
+            <td>{{ enriched_score.score.total_scored }}</td>
+            <td>
+              <a href="/view_answers/{{ enriched_score.quiz.id }}" class="btn btn-primary btn-sm">View Answers</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-        <h3 class="mt-5">Quiz Summary</h3>
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">Subject Wise Trend</div>
-                    <div class="card-body">
-                        <canvas id="subjectTrendChart"></canvas>
-                    </div>
-                </div>
-            </div>
+    <h3 class="sub-section-title mt-5">Quiz Summary</h3>
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header bg-primary text-white">Subject Wise Trend</div>
+          <div class="card-body">
+            <canvas id="subjectTrendChart"></canvas>
+          </div>
         </div>
-        <p></p>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">Score Trend</div>
-                    <div class="card-body">
-                        <canvas id="scoreTrendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">Quiz Attempts Over Time</div>
-                    <div class="card-body">
-                        <canvas id="quizAttemptsChart"></canvas>
-                    </div>
-                </div>
-            </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">Score Trend</div>
+          <div class="card-body">
+            <canvas id="scoreTrendChart"></canvas>
+          </div>
         </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">Quiz Attempts Over Time</div>
+          <div class="card-body">
+            <canvas id="quizAttemptsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const themeToggleBtn = document.getElementById("theme-toggle");
 
-        <script>
-            const summaryData = {{ summaryData | tojson }};
-            const scoreTrendCtx = document.getElementById('scoreTrendChart').getContext('2d');
-            const scoreTrendChart = new Chart(scoreTrendCtx, {
-                type: 'line',
-                data: {
-                    labels: summaryData.dates, 
-                    datasets: [{
-                        label: 'Average Score',
-                        data: summaryData.avg_scores, 
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        x: { title: { display: true, text: 'Date' } },
-                        y: { title: { display: true, text: 'Average Score' } }
-                    }
-                }
-            });
-           
-            const quizAttemptsCtx = document.getElementById('quizAttemptsChart').getContext('2d');
-            const quizAttemptsChart = new Chart(quizAttemptsCtx, {
-                type: 'bar',
-                data: {
-                    labels: summaryData.dates, 
-                    datasets: [{
-                        label: 'Quiz Attempts',
-                        data: summaryData.attempts, 
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        x: { title: { display: true, text: 'Date' } },
-                        y: { title: { display: true, text: 'Quiz Attempts' } }
-                    }
-                }
-            });
-        
-            
-            const subjectTrendCtx = document.getElementById('subjectTrendChart').getContext('2d');
-            const subjectTrendChart = new Chart(subjectTrendCtx, {
-                type: 'bar',
-                data: {
-                    labels: summaryData.subjects, 
-                    datasets: [{
-                        label: 'Attempts by Subject',
-                        data: summaryData.subjectAttempts,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                            'rgba(75, 192, 192, 0.5)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    }
-                }
-            });
-        </script>
-        
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("light-theme", "dark-theme");
+      document.documentElement.classList.add(`${theme}-theme`);
+      themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
 
+    function toggleTheme() {
+      const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    };
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  </script>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const themeToggleBtn = document.getElementById("theme-toggle");
+
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("light-theme", "dark-theme");
+      document.documentElement.classList.add(`${theme}-theme`);
+      themeToggleBtn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.classList.contains("dark-theme") ? "dark" : "light";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+    };
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  </script>
+
+  <!-- Chart.js Scripts -->
+  <script>
+    const summaryData = {{ summaryData | tojson }};
+    new Chart(document.getElementById('scoreTrendChart'), {
+      type: 'line',
+      data: {
+        labels: summaryData.dates,
+        datasets: [{
+          label: 'Average Score',
+          data: summaryData.avg_scores,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderWidth: 2,
+          tension: 0.3
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    new Chart(document.getElementById('quizAttemptsChart'), {
+      type: 'bar',
+      data: {
+        labels: summaryData.dates,
+        datasets: [{
+          label: 'Quiz Attempts',
+          data: summaryData.attempts,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    new Chart(document.getElementById('subjectTrendChart'), {
+      type: 'bar',
+      data: {
+        labels: summaryData.subjects,
+        datasets: [{
+          label: 'Attempts by Subject',
+          data: summaryData.subjectAttempts,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)'
+          ]
+        }]
+      },
+      options: { responsive: true }
+    });
+  </script>
 </body>
 </html>

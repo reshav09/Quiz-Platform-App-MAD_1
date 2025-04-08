@@ -565,7 +565,19 @@ def attempt_quiz(quiz_id):
     return render_template('attempt_quiz.html', quiz=quiz, questions=questions)
 
 ###to check user score
-    
+@app.route('/view_answers/<int:quiz_id>')
+def view_answers(quiz_id):
+    user_id = session.get('user_id')
+    score = Score.query.filter_by(user_id=user_id, quiz_id=quiz_id).first()
+
+    if not score:
+        flash("You haven't attempted this quiz yet.", "warning")
+        return redirect(url_for('user_dashboard'))
+
+    quiz = Quiz.query.get_or_404(quiz_id)
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    return render_template("view_answers.html", questions=questions, quiz=quiz)
+
 
 ##particular quiz page (quiz page)
 ###to submit quiz
