@@ -24,6 +24,7 @@ Frontend: HTML, CSS, Bootstrap 5, JavaScript
 Other: Flask-Login, Jinja2, WTForms
 
 📁 **Project Structure**
+~~~plaintext
 quiz_master/
 ├── instance/
 │   └── quiz_master.db             # SQLite database
