@@ -199,39 +199,48 @@
     <h2 class="section-title">User Dashboard</h2>
     <h3 class="sub-section-title">Available Quizzes</h3>
 
-    {% for subject in subjects %}
-    <div class="subject-section">
-      <h4 class="subject-heading mb-4">{{ subject.name }}</h4>
-      <div class="row">
-        {% for chapter in chapterss if chapter.subject_id == subject.id %}
-        <div class="col-lg-4 col-md-6 col-sm-12 chapter-card">
-          <div class="card">
-            <div class="card-header bg-primary text-white">
-              <h5 class="card-title mb-0">{{ chapter.name }}</h5>
-            </div>
-            <div class="card-body">
-              {% if quizzes|selectattr('chapter_id', 'equalto', chapter.id)|list %}
-              <ul class="list-group list-group-flush">
-                {% for quiz in quizzes if quiz.chapter_id == chapter.id %}
-                <li class="list-group-item quiz-item">
-                  <span>Quiz ID: {{ quiz.id }}</span>
-                  <span class="badge bg-success">{{ quiz.date_of_quiz }}</span>
-                  <a href="/attempt_quiz/{{ quiz.id }}" class="btn btn-primary btn-sm">Attempt Quiz</a>
-                </li>
-                {% endfor %}
-              </ul>
-              {% else %}
+  {% for subject in subjects %}
+      <div class="subject-section">
+        <h4 class="subject-heading mb-4">{{ subject.name }}</h4>
+
+      {% set subject_chapters = chapterss | selectattr("subject_id", "equalto", subject.id) | list %}
+        
+        {% if subject_chapters %}
+        <div class="row">
+          {% for chapter in subject_chapters %}
+          <div class="col-lg-4 col-md-6 col-sm-12 chapter-card">
+            <div class="card">
+              <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">{{ chapter.name }}</h5>
+              </div>
+              <div class="card-body">
+                {% if quizzes | selectattr('chapter_id', 'equalto', chapter.id) | list %}
+                <ul class="list-group list-group-flush">
+                  {% for quiz in quizzes if quiz.chapter_id == chapter.id %}
+                  <li class="list-group-item quiz-item">
+                    <span>Quiz ID: {{ quiz.id }}</span>
+                    <span class="badge bg-success">{{ quiz.date_of_quiz }}</span>
+                    <a href="/attempt_quiz/{{ quiz.id }}" class="btn btn-primary btn-sm">Attempt Quiz</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
                 <p class="no-quizzes-msg">No quizzes available for this chapter currently.</p>
-              {% endif %}
+                {% endif %}
+              </div>
             </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <div class="alert alert-info mt-3">No chapters have been added yet for this subject.</div>
+        {% endif %}
       </div>
-    </div>
     {% endfor %}
 
+
     <h3 class="sub-section-title mt-5">Quiz History</h3>
+    {% if scores %}
     <div class="table-responsive">
       <table class="table table-striped rounded">
         <thead>
@@ -262,13 +271,19 @@
         </tbody>
       </table>
     </div>
+    {% else %}
+    <div class="alert alert-info mt-3" role="alert">
+      You haven't attempted any quizzes till now.
+    </div>
+    {% endif %}
 
     <h3 class="sub-section-title mt-5">Quiz Summary</h3>
+    {% if summaryData %}
     <div class="row mt-4">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header bg-primary text-white">Subject Wise Trend</div>
-          <div class="card-body">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-primary text-white">Subject Wise Trend</div>
+        <div class="card-body">
             <canvas id="subjectTrendChart"></canvas>
           </div>
         </div>
@@ -293,7 +308,11 @@
         </div>
       </div>
     </div>
-  </div>
+    {% else %}
+    <div class="alert alert-info mt-3" role="alert">
+      No quiz summary available yet. Attempt some quizzes to view your trends!
+    </div>
+    {% endif %}
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
